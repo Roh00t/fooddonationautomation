@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Delivery notes — Legends Organisation Donation Intake Portal</title>
+<link rel="stylesheet" href="assets/portal.css">
+<script>
+// Runs before the body paints. An unauthenticated visit never sees the table,
+// so the robot cannot skip the login step by navigating straight here.
+(function () {
+  "use strict";
+  var session = null;
+  try { session = sessionStorage.getItem("legendsPortalSession"); } catch (e) { session = null; }
+  if (!session) { window.location.replace("index.html?auth=required"); }
+})();
+</script>
+</head>
+<body data-page="dashboard">
+
+<header class="masthead">
+  <div class="masthead-inner">
+    <div>
+      <h1>Legends Organisation — Donation Intake Portal</h1>
+      <p>Delivery notes for food rescue collection, Singapore</p>
+    </div>
+    <div class="masthead-meta">
+      Signed in as
+      <strong id="sessionUser" data-testid="session-user">&mdash;</strong>
+    </div>
+  </div>
+</header>
+
+<main>
+
+  <div class="bar">
+    <div>
+      <h2 id="dashboardReady" data-testid="dashboard-ready">Delivery notes published for collection</h2>
+      <p><span id="noteCount" data-testid="note-count">3</span> notes available &mdash;
+         download each one and register it against today&rsquo;s inventory.</p>
+    </div>
+    <button type="button" class="quiet" id="btnLogout" name="btnLogout"
+            data-testid="logout-button">Sign out</button>
+  </div>
+
+  <div class="table-wrap">
+    <table id="deliveryNotesTable" name="deliveryNotesTable"
+           data-testid="delivery-notes-table">
+      <thead>
+        <tr>
+          <th scope="col">Reference</th>
+          <th scope="col">Donor organisation</th>
+          <th scope="col">Issued</th>
+          <th scope="col" class="num">Line items</th>
+          <th scope="col">Storage</th>
+          <th scope="col">File</th>
+          <th scope="col">Action</th>
+        </tr>
+      </thead>
+      <tbody id="deliveryNotesBody" data-testid="delivery-notes-body">
+        <tr data-testid="note-row" data-note-ref="DN-AS-20260822-01">
+          <td class="ref" data-testid="note-reference">DN-AS-20260822-01</td>
+          <td data-testid="note-donor">Alpha Supermart</td>
+          <td data-testid="note-issued">22 Aug 2026</td>
+          <td class="num" data-testid="note-lines">6</td>
+          <td data-testid="note-storage">Dry</td>
+          <td data-testid="note-filename">Food Donation Form_Alpha Supermart_20260822.pdf</td>
+          <td>
+            <a class="download"
+              id="downloadAlphaSupermart"
+              name="downloadAlphaSupermart"
+              data-testid="download-link"
+              data-note-ref="DN-AS-20260822-01"
+              href="https://drive.google.com/file/d/1Um7PBU27GVo8OqscOBVW2N8djUqv6O2o/view?usp=sharing"
+              download="Food Donation Form_Alpha Supermart_20260822.pdf"
+              target="_blank" rel="noopener noreferrer">Download PDF</a>
+          </td>
+        </tr>
+
+        <!-- Line items and Storage are placeholders: replace TBC once you have
+             opened the Bravo Supermart PDF and counted its lines. -->
+        <tr data-testid="note-row" data-note-ref="DN-BS-20260825-01">
+          <td class="ref" data-testid="note-reference">DN-BS-20260825-01</td>
+          <td data-testid="note-donor">Bravo Supermart</td>
+          <td data-testid="note-issued">25 Aug 2026</td>
+          <td class="num" data-testid="note-lines">TBC</td>
+          <td data-testid="note-storage">TBC</td>
+          <td data-testid="note-filename">Food Donation Form_Bravo Supermart_20260825.pdf</td>
+          <td>
+            <a class="download"
+              id="downloadBravoSupermart"
+              name="downloadBravoSupermart"
+              data-testid="download-link"
+              data-note-ref="DN-BS-20260825-01"
+              href="https://drive.google.com/file/d/1n11JIOIFHxp6rLdQHPJWn6LWCb4YrYrU/view?usp=sharing"
+              download="Food Donation Form_Bravo Supermart_20260825.pdf"
+              target="_blank" rel="noopener noreferrer">Download PDF</a>
+          </td>
+        </tr>
+
+        <!-- Same here for Charlie Supermart. -->
+        <tr data-testid="note-row" data-note-ref="DN-CS-20260820-01">
+          <td class="ref" data-testid="note-reference">DN-CS-20260820-01</td>
+          <td data-testid="note-donor">Charlie Supermart</td>
+          <td data-testid="note-issued">20 Aug 2026</td>
+          <td class="num" data-testid="note-lines">TBC</td>
+          <td data-testid="note-storage">TBC</td>
+          <td data-testid="note-filename">Food Donation Form_Charlie Supermart_20260820.pdf</td>
+          <td>
+            <a class="download"
+              id="downloadCharlieSupermart"
+              name="downloadCharlieSupermart"
+              data-testid="download-link"
+              data-note-ref="DN-CS-20260820-01"
+              href="YOUR_GOOGLE_DRIVE_DIRECT_LINK_HERE"
+              download="Food Donation Form_Charlie Supermart_20260820.pdf"
+              target="_blank" rel="noopener noreferrer">Download PDF</a>
+          </td>
+        </tr>
+
+      </tbody>
+    </table>
+  </div>
+
+  <p class="footnote">All donor organisations, contact details and delivery
+    notes on this portal are fictional and were created by the project team.
+    No real donor, charity or personal data is used.</p>
+
+</main>
+
+<script>
+(function () {
+  "use strict";
+  var SESSION_KEY = "legendsPortalSession";
+
+  var raw = null;
+  try { raw = sessionStorage.getItem(SESSION_KEY); } catch (e) { raw = null; }
+  if (!raw) { return; }
+
+  try {
+    var session = JSON.parse(raw);
+    document.getElementById("sessionUser").textContent = session.user || "unknown";
+  } catch (e) {
+    document.getElementById("sessionUser").textContent = "unknown";
+  }
+
+  // Keep the count honest even if rows are added or removed later.
+  var rows = document.querySelectorAll("#deliveryNotesBody tr[data-testid='note-row']");
+  document.getElementById("noteCount").textContent = String(rows.length);
+
+  document.getElementById("btnLogout").addEventListener("click", function () {
+    try { sessionStorage.removeItem(SESSION_KEY); } catch (e) { /* ignore */ }
+    window.location.href = "index.html";
+  });
+})();
+</script>
+
+</body>
+</html>

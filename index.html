@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sign in — Legends Organisation Donor Portal</title>
+<link rel="stylesheet" href="assets/portal.css">
+</head>
+<body data-page="login">
+
+<header class="masthead">
+  <div class="masthead-inner">
+    <div>
+      <h1>Legends Organisation — Donor Portal</h1>
+      <p>Delivery notes for food rescue collection, Singapore</p>
+    </div>
+    <div class="masthead-meta">
+      Coordination desk<br>
+      <strong>Food rescue operations</strong>
+    </div>
+  </div>
+</header>
+
+<main>
+  <div class="split">
+
+    <section class="panel" aria-labelledby="signInHeading">
+      <h2 id="signInHeading">Sign in</h2>
+      <p class="lede">Donor accounts can view and download the delivery notes
+        published for collection today.</p>
+
+      <div class="field">
+        <label for="username">Username</label>
+        <input type="text" id="username" name="username"
+               data-testid="login-username"
+               autocomplete="off" spellcheck="false" placeholder="Enter username">
+      </div>
+
+      <div class="field">
+        <label for="password">Password</label>
+        <input type="password" id="password" name="password"
+               data-testid="login-password"
+               autocomplete="off" placeholder="Enter password">
+      </div>
+
+      <button type="button" class="primary" id="btnLogin" name="btnLogin"
+              data-testid="login-submit">Sign in</button>
+
+      <div class="message" id="loginError" name="loginError"
+           data-testid="login-error" role="alert" aria-live="polite" hidden></div>
+
+      <p class="hint">Test credentials for this environment:
+        <code>coordinator</code> / <code>Rescue2026</code></p>
+    </section>
+
+    <section class="criteria" aria-labelledby="criteriaHeading">
+      <h3 id="criteriaHeading">Donation acceptance criteria</h3>
+      <ol>
+        <li><strong>Expiry dates.</strong> All non-perishable items must have a
+          minimum four-week shelf life remaining before expiration.</li>
+        <li><strong>Packaging.</strong> All goods must be unopened,
+          factory-sealed and undamaged. Minor cosmetic damage to outer packaging
+          is acceptable provided it does not compromise product quality or safety.</li>
+        <li><strong>Temperature control.</strong> Chilled items (below 4&deg;C) and
+          frozen items (below &minus;18&deg;C) must maintain unbroken cold-chain
+          compliance until handover.</li>
+      </ol>
+      <p class="footnote">This is a test environment. All donor organisations,
+        contact details and delivery notes are fictional and were created by the
+        project team. No real donor, charity or personal data is used.</p>
+    </section>
+
+  </div>
+</main>
+
+<script>
+(function () {
+  "use strict";
+
+  var VALID_USER = "coordinator";
+  var VALID_PASS = "Rescue2026";
+  var SESSION_KEY = "legendsPortalSession";
+
+  var userEl  = document.getElementById("username");
+  var passEl  = document.getElementById("password");
+  var btnEl   = document.getElementById("btnLogin");
+  var errEl   = document.getElementById("loginError");
+
+  function showError(text) {
+    errEl.textContent = text;
+    errEl.hidden = false;
+  }
+
+  function clearError() {
+    errEl.textContent = "";
+    errEl.hidden = true;
+  }
+
+  function signIn() {
+    clearError();
+    var u = userEl.value.trim();
+    var p = passEl.value;
+
+    if (!u || !p) {
+      showError("Enter both a username and a password to continue.");
+      return;
+    }
+    if (u !== VALID_USER || p !== VALID_PASS) {
+      showError("Those credentials were not recognised. Check the username and password and try again.");
+      passEl.value = "";
+      return;
+    }
+
+    try {
+      sessionStorage.setItem(SESSION_KEY, JSON.stringify({
+        user: u,
+        signedInAt: new Date().toISOString()
+      }));
+    } catch (e) {
+      showError("This browser is blocking session storage, so the dashboard cannot open.");
+      return;
+    }
+    window.location.href = "dashboard.html";
+  }
+
+  btnEl.addEventListener("click", signIn);
+
+  [userEl, passEl].forEach(function (el) {
+    el.addEventListener("keydown", function (ev) {
+      if (ev.key === "Enter") { signIn(); }
+    });
+  });
+
+  // Message shown when the dashboard bounces an unauthenticated visit back here.
+  if (window.location.search.indexOf("auth=required") !== -1) {
+    showError("Sign in to view the delivery notes published for collection.");
+  }
+})();
+</script>
+
+</body>
+</html>

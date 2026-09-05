@@ -1,5 +1,7 @@
 # Legends Organisation — Mock Donation Intake Portal
 
+
+The link is here: `https://roh00t.github.io/fooddonationautomation/`
 A static test fixture for **WF0 `Portal_DownloadDeliveryNotes`** (UiPath Studio Web).
 No backend. Hosts on GitHub Pages as-is.
 
@@ -29,7 +31,7 @@ for WF0 that you must resolve before building.
 
 1. Push these files to the repo root on the `main` branch.
 2. Settings → Pages → Source: **Deploy from a branch** → `main` / `/ (root)`.
-3. Wait for the build, then open `https://<user>.github.io/<repo>/`.
+3. Wait for the build, then open `https://roh00t.github.io/fooddonationautomation/`.
 
 ## Test credentials
 
